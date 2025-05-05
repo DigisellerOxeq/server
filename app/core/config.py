@@ -1,16 +1,29 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import SecretStr
+from pydantic import BaseModel
 from dotenv import find_dotenv
+
+
+class RunConfig(BaseModel):
+    host: str = 'localhost'
+    port: int = 5541
+
+
+class DataBaseConfig(BaseModel):
+    url: str  = ...
 
 
 class Settings(BaseSettings):
 
-    DATABASE_URL: SecretStr = ...
-    APP_NAME: SecretStr = ...
-
     model_config = SettingsConfigDict(
+        case_sensitive=False,
+        env_nested_delimiter='__',
         env_file=find_dotenv(),
         env_file_encoding="utf-8"
     )
 
+    run: RunConfig = RunConfig()
+    db: DataBaseConfig = ...
+
 settings = Settings()
+
+

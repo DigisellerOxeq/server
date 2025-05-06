@@ -25,5 +25,3 @@ class Settings(BaseSettings):
     db: DataBaseConfig = ...
 
 settings = Settings()
-
-

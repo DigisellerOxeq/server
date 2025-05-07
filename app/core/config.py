@@ -12,6 +12,10 @@ class DataBaseConfig(BaseModel):
     url: str  = ...
 
 
+class AuthConfig(BaseModel):
+    token: str = ...
+
+
 class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
@@ -23,5 +27,6 @@ class Settings(BaseSettings):
 
     run: RunConfig = RunConfig()
     db: DataBaseConfig = ...
+    auth: AuthConfig = ...
 
 settings = Settings()

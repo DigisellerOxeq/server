@@ -16,6 +16,12 @@ class AuthConfig(BaseModel):
     token: str = ...
 
 
+class DigisellerConfig(BaseModel):
+    timeout: int = 15
+    base_url: str = 'https://api.digiseller.ru'
+    token: str = ...
+
+
 class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
@@ -28,5 +34,6 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     db: DataBaseConfig = ...
     auth: AuthConfig = ...
+    digi: DigisellerConfig = ...
 
 settings = Settings()

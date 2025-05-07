@@ -1,21 +1,17 @@
 from fastapi import APIRouter
 from fastapi.params import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.session import db_helper
 from app.schemas.orders import OrderRead
-from app.repositories.orders import OrderRepository
+from app.services.orders import OrderService
+from app.dependencies.orders import get_order_service
+from app.dependencies.auth import get_auth
 
 router = APIRouter(
     prefix='/orders',
     tags=['Orders']
 )
 
-@router.get('/get', response_model=list[OrderRead])
-async def get_orders(
-        session: AsyncSession = Depends(db_helper.session_getter),
-):
-    repo = OrderRepository(session)
-    result = await repo.get_all()
 
-    return result
+@router.get("/get", response_model=list[OrderRead], dependencies=[Depends(get_auth)])
+async def get_orders(service: OrderService = Depends(get_order_service)):
+    return await service.get_all_orders()

@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from fastapi.params import Depends
 
 from app.schemas.orders import OrderRead
@@ -15,3 +15,11 @@ router = APIRouter(
 @router.get("/get", response_model=list[OrderRead], dependencies=[Depends(get_auth)])
 async def get_orders(service: OrderService = Depends(get_order_service)):
     return await service.get_all_orders()
+
+
+@router.post('/create')
+async def check_unique_code(
+        service: OrderService = Depends(get_order_service),
+        unique_code: str = Query(default=..., max_length=30),
+):
+    return await service.create_order()

@@ -17,9 +17,12 @@ class AuthConfig(BaseModel):
 
 
 class DigisellerConfig(BaseModel):
-    timeout: int = 15
     base_url: str = 'https://api.digiseller.ru'
     token: str = ...
+    seller_id: int = 123
+    timeout: int = 15
+    retries: int = 3
+    delay: int = 1
 
 
 class Settings(BaseSettings):

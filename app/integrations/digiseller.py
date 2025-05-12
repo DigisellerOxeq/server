@@ -1,52 +1,43 @@
 import time
 import hashlib
 
-from app.core.config import settings
 from app.lib.http_client import HTTPClient
 
 
+class DigisellerAPIError(Exception):
+    def __init__(self, message: str, status_code: int | None = None):
+        self.status_code = status_code
+        super().__init__(message)
+
+
 class DigisellerAPI:
-
     def __init__(self, http_client: HTTPClient, token: str, seller_id: int):
-
         self.http_client = http_client
         self.token = token
         self.seller_id = seller_id
 
-
-"""    def get_token(self):
-
+    async def get_auth_token(self) -> str:
         timestamp = int(time.time())
+        signature = self._generate_signature(timestamp)
 
-        data = self.token + str(timestamp)
-        sign = hashlib.sha256(data.encode('utf-8')).hexdigest()
+        try:
+            response = await self.http_client.post(
+                endpoint="/api/apilogin",
+                json={
+                    "seller_id": self.seller_id,
+                    "timestamp": timestamp,
+                    "sign": signature,
+                },
+            )
 
-        json_ = {
-            "seller_id": self.seller_id,
-            "timestamp": timestamp,
-            "sign": sign
-        }
+            if not response.get("token"):
+                raise DigisellerAPIError("Invalid response format")
 
-        http_client = HTTPClient(
-            base_url=settings.digi.base_url,
-            timeout=settings.digi.timeout,
-            retries=settings.digi.retries,
-            delay=settings.digi.delay,
-            headers=1
-        )
+            return response["token"]
 
-        response = HTTPClient.post(
-            self,
-            endpoint='/api/apilogin',
-            json=json_,
-            headers=1
-        )
+        except Exception as e:
+            raise DigisellerAPIError(f"Auth failed: {str(e)}")
 
-
-        if response.status_code != 200:
-            return None
-
-        if 'retval' not in data or 'token' not in data or data['retval'] != 0:
-            return None
-
-        return data['token']"""
+    def _generate_signature(self, timestamp: int) -> str:
+        data = f"{self.token}{timestamp}"
+        return hashlib.sha256(data.encode()).hexdigest()

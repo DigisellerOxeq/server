@@ -7,12 +7,21 @@ from fastapi.responses import ORJSONResponse
 from app.db.session import db_helper
 from app.core.config import settings
 from app.api import router as api_router
+from app.lib.http_client import HTTPClient
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    app.state.http_client = HTTPClient(
+        base_url=settings.digi.base_url,
+        headers=settings.digi.headers,
+        timeout=settings.digi.timeout,
+        delay=settings.digi.delay,
+        retries=settings.digi.retries
+    )
     yield
     await db_helper.dispose()
+    await app.state.http_client.close()
 
 
 app = FastAPI(

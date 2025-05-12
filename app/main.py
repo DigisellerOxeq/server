@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
         headers=settings.digi.headers,
         timeout=settings.digi.timeout,
         delay=settings.digi.delay,
-        retries=settings.digi.retries
+        retries=settings.digi.retries,
     )
     yield
     await db_helper.dispose()

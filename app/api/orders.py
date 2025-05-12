@@ -22,6 +22,6 @@ async def get_orders(service: OrderService = Depends(get_order_service)):
 async def create_order(
     service: OrderService = Depends(get_order_service),
     digi_api: DigisellerAPI = Depends(get_digiseller_api),
-    unique_code: str = Query(default=..., max_length=30)
+    unique_code: str = Query(default=..., max_length=30),
 ):
     return await service.create_order(unique_code, digi_api)

@@ -1,3 +1,4 @@
+import time
 from typing import Sequence
 
 from fastapi import HTTPException
@@ -5,6 +6,7 @@ from fastapi import HTTPException
 from app.integrations.digiseller import DigisellerAPI, DigisellerAPIError
 from app.repositories.orders import OrderRepository
 from app.schemas import OrderRead
+from app.utils.convert_time import moscow_to_timestamp
 
 
 class OrderService:
@@ -25,7 +27,7 @@ class OrderService:
             order_data = await digi_api.search_order(
                 unique_code=unique_code, token=token
             )
-            print(order_data)
+
             order = self._map_digi_response_to_order(unique_code, order_data)
             return await self.order_repo.create(order)
 
@@ -38,6 +40,12 @@ class OrderService:
         self, unique_code: str, digi_data: dict
     ) -> OrderRead:
         return OrderRead(
-            id=digi_data.get("order_id"),
+            inv=digi_data.get("inv"),
             unique_code=unique_code,
+            buyer_email=digi_data.get("email"),
+            received=digi_data.get("amount"),
+            received_currency=digi_data.get("type_curr"),
+            pay_time=moscow_to_timestamp(digi_data.get("date_pay")),
+            check_time=int(time.time()),
+            status=OrderRead.status.pending
         )

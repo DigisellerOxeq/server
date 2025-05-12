@@ -1,6 +1,5 @@
 import time
 import hashlib
-from email.policy import default
 
 from app.core.config import settings
 from app.lib.http_client import HTTPClient
@@ -8,7 +7,9 @@ from app.lib.http_client import HTTPClient
 
 class DigisellerAPI:
 
-    def __init__(self, token: str, seller_id: int):
+    def __init__(self, http_client: HTTPClient, token: str, seller_id: int):
+
+        self.http_client = http_client
         self.token = token
         self.seller_id = seller_id
 
@@ -31,14 +32,14 @@ class DigisellerAPI:
             timeout=settings.digi.timeout,
             retries=settings.digi.retries,
             delay=settings.digi.delay,
-            headers=
+            headers=1
         )
 
         response = HTTPClient.post(
             self,
             endpoint='/api/apilogin',
             json=json_,
-            headers=
+            headers=1
         )
 
 

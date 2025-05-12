@@ -1,31 +1,50 @@
-import httpx
-from typing import Any
+import time
+import hashlib
+from email.policy import default
+
+from app.core.config import settings
+from app.lib.http_client import HTTPClient
 
 
 class DigisellerAPI:
-    BASE_URL = "https://partner-api.example.com"
-    TIMEOUT = 15.0
 
-    def __init__(self, token: str):
+    def __init__(self, token: str, seller_id: int):
         self.token = token
+        self.seller_id = seller_id
 
-    async def get_data_by_code(self, code: str) -> dict[str, Any]:
-        url = f"{self.BASE_URL}/api/data"
-        headers = {
-            "Authorization": f"Bearer {self.token}",
-            "Accept": "application/json"
+    def get_token(self):
+
+        timestamp = int(time.time())
+
+        data = self.token + str(timestamp)
+        sign = hashlib.sha256(data.encode('utf-8')).hexdigest()
+
+        json_ = {
+            "seller_id": self.seller_id,
+            "timestamp": timestamp,
+            "sign": sign
         }
-        params = {"code": code}
 
-        try:
-            async with httpx.AsyncClient(timeout=self.TIMEOUT) as client:
-                response = await client.get(url, headers=headers, params=params)
-                response.raise_for_status()
-                return response.json()
+        http_client = HTTPClient(
+            base_url=settings.digi.base_url,
+            timeout=settings.digi.timeout,
+            retries=settings.digi.retries,
+            delay=settings.digi.delay,
+            headers=
+        )
 
-        except httpx.HTTPStatusError as e:
-            raise RuntimeError(f"HTTP error {e.response.status_code}: {e.response.text}")
-        except httpx.TimeoutException:
-            raise RuntimeError("Request timed out")
-        except httpx.RequestError as e:
-            raise RuntimeError(f"Request failed: {str(e)}")
+        response = HTTPClient.post(
+            self,
+            endpoint='/api/apilogin',
+            json=json_,
+            headers=
+        )
+
+
+        if response.status_code != 200:
+            return None
+
+        if 'retval' not in data or 'token' not in data or data['retval'] != 0:
+            return None
+
+        return data['token']

@@ -12,3 +12,8 @@ class OrderRepository:
         result = await self.session.scalars(select(Orders))
         return result.all()
 
+    async def get_by_unique_code(self, unique_code: Orders.unique_code) -> Orders:
+        result = await self.session.execute(select(Orders).where(Orders.unique_code==unique_code))
+        return result.scalar_one_or_none()
+
+

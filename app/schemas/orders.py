@@ -15,7 +15,7 @@ class Status(str, Enum):
 # Получение информации о заказе
 class OrderRead(BaseModel):
 
-    id: int
+    id: Optional[int] = None
     inv: int
     unique_code: str
     lot_type: str

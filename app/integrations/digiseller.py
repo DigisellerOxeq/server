@@ -1,5 +1,6 @@
 import time
 import hashlib
+from typing import Any
 
 from app.lib.http_client import HTTPClient
 
@@ -11,9 +12,9 @@ class DigisellerAPIError(Exception):
 
 
 class DigisellerAPI:
-    def __init__(self, http_client: HTTPClient, token: str, seller_id: int):
+    def __init__(self, http_client: HTTPClient, api_key: str, seller_id: int):
         self.http_client = http_client
-        self.token = token
+        self.api_key = api_key
         self.seller_id = seller_id
 
     async def get_auth_token(self) -> str:
@@ -39,5 +40,19 @@ class DigisellerAPI:
             raise DigisellerAPIError(f"Auth failed: {str(e)}")
 
     def _generate_signature(self, timestamp: int) -> str:
-        data = f"{self.token}{timestamp}"
+        data = f"{self.api_key}{timestamp}"
         return hashlib.sha256(data.encode()).hexdigest()
+
+    async def search_order(self, unique_code, token) -> dict[Any]:
+        try:
+            response = await self.http_client.get(
+                endpoint=f"/api/purchases/unique-code/{unique_code}/?token={token}",
+            )
+
+            if response.get("retval") != 0:
+                raise DigisellerAPIError("Invalid response format")
+
+            return response
+
+        except Exception as e:
+            raise DigisellerAPIError(f"Search failed: {str(e)}")

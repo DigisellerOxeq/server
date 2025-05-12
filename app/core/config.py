@@ -19,8 +19,8 @@ class AuthConfig(BaseModel):
 class DigisellerConfig(BaseModel):
     base_url: str = "https://api.digiseller.ru"
     headers: dict = {"Content-Type": "application/json", "Accept": "application/json"}
-    token: str = ...
-    seller_id: int = 123
+    api_key: str = ...
+    seller_id: int = 1170447
     timeout: int = 15
     retries: int = 3
     delay: int = 1

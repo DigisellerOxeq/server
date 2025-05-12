@@ -12,7 +12,8 @@ class DigisellerAPI:
         self.token = token
         self.seller_id = seller_id
 
-    def get_token(self):
+
+"""    def get_token(self):
 
         timestamp = int(time.time())
 
@@ -47,4 +48,4 @@ class DigisellerAPI:
         if 'retval' not in data or 'token' not in data or data['retval'] != 0:
             return None
 
-        return data['token']
+        return data['token']"""

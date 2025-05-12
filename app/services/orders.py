@@ -17,10 +17,4 @@ class OrderService:
         if self.order_repo.get_by_unique_code(unique_code=unique_code):
             return False
 
-
-
-
-
-
-
         return None

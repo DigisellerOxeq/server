@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from enum import Enum
 
+
 # Статусы заказов
 class Status(str, Enum):
     pending = "pending"

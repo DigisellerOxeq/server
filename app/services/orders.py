@@ -5,8 +5,24 @@ from fastapi import HTTPException
 
 from app.integrations.digiseller import DigisellerAPI, DigisellerAPIError
 from app.repositories.orders import OrderRepository
-from app.schemas import OrderRead
+from app.schemas.orders import OrderCreate, OrderRead
 from app.utils.convert_time import moscow_to_timestamp
+
+
+def map_digi_response_to_order(
+        unique_code: str, digi_data: dict
+) -> OrderCreate:
+    return OrderCreate(
+        inv=digi_data.get("inv"),
+        unique_code=unique_code,
+        lot_id=digi_data.get('id_goods'),
+        buyer_email=digi_data.get("email"),
+        received=digi_data.get("amount"),
+        received_currency=digi_data.get("type_curr"),
+        pay_time=moscow_to_timestamp(digi_data.get("date_pay")),
+        check_time=int(time.time()),
+        status=OrderRead.status.pending,
+    )
 
 
 class OrderService:
@@ -18,7 +34,7 @@ class OrderService:
 
     async def create_order(
         self, unique_code: str, digi_api: DigisellerAPI
-    ) -> OrderRead:
+    ) -> OrderCreate:
         if existing_order := await self.order_repo.get_by_unique_code(unique_code):
             return existing_order
 
@@ -28,24 +44,10 @@ class OrderService:
                 unique_code=unique_code, token=token
             )
 
-            order = self._map_digi_response_to_order(unique_code, order_data)
+            order = map_digi_response_to_order(unique_code, order_data)
             return await self.order_repo.create(order)
 
         except DigisellerAPIError as e:
             raise HTTPException(
                 status_code=502, detail=f"Digiseller service unavailable: {str(e)}"
             )
-
-    def _map_digi_response_to_order(
-        self, unique_code: str, digi_data: dict
-    ) -> OrderRead:
-        return OrderRead(
-            inv=digi_data.get("inv"),
-            unique_code=unique_code,
-            buyer_email=digi_data.get("email"),
-            received=digi_data.get("amount"),
-            received_currency=digi_data.get("type_curr"),
-            pay_time=moscow_to_timestamp(digi_data.get("date_pay")),
-            check_time=int(time.time()),
-            status=OrderRead.status.pending
-        )

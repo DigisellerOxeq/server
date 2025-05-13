@@ -18,7 +18,7 @@ async def get_orders(service: OrderService = Depends(get_order_service)):
 
 
 # Создание заказа по уникальному коду Digiseller
-@router.post("/create")
+@router.post("/create", response_model=OrderRead)
 async def create_order(
     service: OrderService = Depends(get_order_service),
     digi_api: DigisellerAPI = Depends(get_digiseller_api),

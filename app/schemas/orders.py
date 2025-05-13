@@ -1,7 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel
-
 from enum import Enum
+
+from offers import OfferRead
 
 
 # Статусы заказов
@@ -18,7 +19,6 @@ class OrderRead(BaseModel):
     id: Optional[int] = None
     inv: int
     unique_code: str
-    lot_type: str
     buyer_email: str
     received: float
     received_currency: str
@@ -26,3 +26,5 @@ class OrderRead(BaseModel):
     check_time: Optional[int] = None
     status: Status
     notation: Optional[str] = None
+
+    offer: OfferRead

@@ -9,13 +9,11 @@ from app.schemas.orders import OrderCreate, OrderRead
 from app.utils.convert_time import moscow_to_timestamp
 
 
-def map_digi_response_to_order(
-        unique_code: str, digi_data: dict
-) -> OrderCreate:
+def map_digi_response_to_order(unique_code: str, digi_data: dict) -> OrderCreate:
     return OrderCreate(
         inv=digi_data.get("inv"),
         unique_code=unique_code,
-        lot_id=digi_data.get('id_goods'),
+        lot_id=digi_data.get("id_goods"),
         buyer_email=digi_data.get("email"),
         received=digi_data.get("amount"),
         received_currency=digi_data.get("type_curr"),

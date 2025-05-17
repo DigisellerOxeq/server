@@ -33,6 +33,9 @@ class OrderService:
     async def get_all_orders(self) -> Sequence[OrderRead]:
         return await self.order_repo.get_all()
 
+    async def get_by_unique_code(self, unique_code: str) -> OrderRead:
+        return await self.order_repo.get_by_unique_code(unique_code)
+
     async def create_order(
         self, unique_code: str, digi_api: DigisellerAPI
     ) -> OrderCreate:

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
 from fastapi.params import Depends
 
 from app.integrations.digiseller import DigisellerAPI
@@ -17,11 +17,19 @@ async def get_all_orders(service: OrderService = Depends(get_order_service)):
     return await service.get_all_orders()
 
 
+# Получение заказа по unique code
+@router.get("/{unique_code}", response_model=list[OrderRead], dependencies=[Depends(get_auth)])
+async def get_by_unique_code(
+        unique_code: str,
+        service: OrderService = Depends(get_order_service)):
+    return await service.get_by_unique_code(unique_code)
+
+
 # Создание заказа по уникальному коду Digiseller
-@router.post("/", response_model=OrderRead)
+@router.post("/{unique_code}", response_model=OrderRead)
 async def create_order(
+    unique_code: str,
     service: OrderService = Depends(get_order_service),
     digi_api: DigisellerAPI = Depends(get_digiseller_api),
-    unique_code: str = Query(default=..., max_length=30),
 ):
     return await service.create_order(unique_code, digi_api)

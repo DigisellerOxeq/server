@@ -12,13 +12,13 @@ router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
 # Получение всех заказов
-@router.get("/get", response_model=list[OrderRead], dependencies=[Depends(get_auth)])
-async def get_orders(service: OrderService = Depends(get_order_service)):
+@router.get("/", response_model=list[OrderRead], dependencies=[Depends(get_auth)])
+async def get_all_orders(service: OrderService = Depends(get_order_service)):
     return await service.get_all_orders()
 
 
 # Создание заказа по уникальному коду Digiseller
-@router.post("/create", response_model=OrderRead)
+@router.post("/", response_model=OrderRead)
 async def create_order(
     service: OrderService = Depends(get_order_service),
     digi_api: DigisellerAPI = Depends(get_digiseller_api),

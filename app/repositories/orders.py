@@ -18,7 +18,7 @@ class OrderRepository:
         )
         return result.all()
 
-    async def get_by_unique_code(self, unique_code: Orders.unique_code) -> Orders:
+    async def get_by_unique_code(self, unique_code: str) -> Orders:
         result = await self.session.execute(
             select(Orders)
             .options(joinedload(Orders.offer))

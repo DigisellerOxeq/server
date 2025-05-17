@@ -10,20 +10,20 @@ from app.db.models.orders import Orders
 from app.utils.convert_time import moscow_to_timestamp
 
 
-def map_digi_response_to_order(unique_code: str, digi_data: dict) -> Orders:
-    data = OrderCreate(
-        inv=digi_data.get("inv"),
-        unique_code=unique_code,
-        lot_id=digi_data.get("id_goods"),
-        buyer_email=digi_data.get("email"),
-        received=digi_data.get("amount"),
-        received_currency=digi_data.get("type_curr"),
-        pay_time=moscow_to_timestamp(digi_data.get("date_pay")),
-        check_time=int(time.time()),
-        status=OrderRead.status.pending,
+def map_response(unique_code: str, digi_data: dict) -> Orders:
+    return Orders(
+        **OrderCreate(
+            inv=digi_data.get("inv"),
+            unique_code=unique_code,
+            lot_id=digi_data.get("id_goods"),
+            buyer_email=digi_data.get("email"),
+            received=digi_data.get("amount"),
+            received_currency=digi_data.get("type_curr"),
+            pay_time=moscow_to_timestamp(digi_data.get("date_pay")),
+            check_time=int(time.time()),
+            status=OrderCreate.status.pending,
+        ).model_dump()
     )
-
-    return Orders(**data.model_dump())
 
 
 class OrderService:
@@ -45,7 +45,7 @@ class OrderService:
                 unique_code=unique_code, token=token
             )
 
-            order = map_digi_response_to_order(unique_code, order_data)
+            order = map_response(unique_code, order_data)
             return await self.order_repo.create(order)
 
         except DigisellerAPIError as e:

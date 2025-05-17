@@ -34,7 +34,10 @@ class OrderService:
         return await self.order_repo.get_all()
 
     async def get_by_unique_code(self, unique_code: str) -> OrderRead:
-        return await self.order_repo.get_by_unique_code(unique_code)
+        order = await self.order_repo.get_by_unique_code(unique_code)
+        if not order:
+            raise HTTPException(status_code=404, detail="Offer not found")
+        return await order
 
     async def create_order(
         self, unique_code: str, digi_api: DigisellerAPI

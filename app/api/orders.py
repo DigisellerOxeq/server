@@ -18,10 +18,12 @@ async def get_all_orders(service: OrderService = Depends(get_order_service)):
 
 
 # Получение заказа по unique code
-@router.get("/{unique_code}", response_model=list[OrderRead], dependencies=[Depends(get_auth)])
+@router.get(
+    "/{unique_code}", response_model=list[OrderRead], dependencies=[Depends(get_auth)]
+)
 async def get_by_unique_code(
-        unique_code: str,
-        service: OrderService = Depends(get_order_service)):
+    unique_code: str, service: OrderService = Depends(get_order_service)
+):
     return await service.get_by_unique_code(unique_code)
 
 

@@ -17,8 +17,7 @@ class OfferRepository:
 
     async def get_by_id(self, offer_id: int) -> Offers:
         result = await self.session.execute(
-            select(Offers)
-            .where(Offers.lot_id == offer_id)
+            select(Offers).where(Offers.lot_id == offer_id)
         )
         return result.scalar_one_or_none()
 

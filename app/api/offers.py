@@ -18,8 +18,7 @@ async def get_offers(service: OfferService = Depends(get_offer_service)):
 # Получение всех лота по ID
 @router.get("/{offer_id}", response_model=OfferRead, dependencies=[Depends(get_auth)])
 async def get_offer_by_id(
-        offer_id: int,
-        service: OfferService = Depends(get_offer_service)
+    offer_id: int, service: OfferService = Depends(get_offer_service)
 ):
     return await service.get_offer_by_id(offer_id)
 
@@ -35,8 +34,6 @@ async def create_offer(
 # Изменение лота
 @router.patch("/{offer_id}", response_model=OfferRead, dependencies=[Depends(get_auth)])
 async def edit_offer(
-        offer_id: int,
-        data: OfferUpdate,
-        service: OfferService = Depends(get_offer_service)
+    offer_id: int, data: OfferUpdate, service: OfferService = Depends(get_offer_service)
 ):
     return await service.edit_offer(data)

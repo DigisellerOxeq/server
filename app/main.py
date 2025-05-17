@@ -43,7 +43,7 @@ async def handle_database_error(request: Request, exc: DatabaseError):
 
 
 @app.exception_handler(NotFoundError)
-async def handle_not_found_error(request, exc: NotFoundError):
+async def handle_not_found_error(request: Request, exc: NotFoundError):
     return ORJSONResponse(status_code=404, content={"detail": str(exc)})
 
 

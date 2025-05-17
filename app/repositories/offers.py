@@ -19,8 +19,7 @@ class OfferRepository:
     @handle_db_errors
     async def get_by_id(self, offer_id: int) -> Offers:
         result = await self.session.scalar(
-            select(Offers)
-            .where(Offers.lot_id == offer_id)
+            select(Offers).where(Offers.lot_id == offer_id)
         )
         return result
 
@@ -29,7 +28,6 @@ class OfferRepository:
         self.session.add(data)
         await self.session.commit()
         return data
-
 
     @handle_db_errors
     async def update(self, offer_id: int, update_data: dict) -> Offers:

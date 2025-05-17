@@ -10,6 +10,7 @@ from app.api import router as api_router
 from app.lib.http_client import HTTPClient
 from app.core.exceptions import DatabaseError, NotFoundError
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.http_client = HTTPClient(
@@ -35,9 +36,11 @@ app.include_router(
     api_router,
 )
 
+
 @app.exception_handler(DatabaseError)
 async def handle_database_error(request: Request, exc: DatabaseError):
     return ORJSONResponse(status_code=500, content={"detail": str(exc)})
+
 
 @app.exception_handler(NotFoundError)
 async def handle_not_found(request, exc):

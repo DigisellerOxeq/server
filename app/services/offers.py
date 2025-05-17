@@ -29,4 +29,6 @@ class OfferService:
         offer = await self.repo.get_by_id(offer_id)
         if not offer:
             raise HTTPException(status_code=404, detail="Offer not found")
-        return await self.repo.update(offer_id, update_data.model_dump(exclude_unset=True))
+        return await self.repo.update(
+            offer_id, update_data.model_dump(exclude_unset=True)
+        )

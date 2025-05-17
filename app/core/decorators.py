@@ -3,7 +3,8 @@ from typing import Callable, TypeVar
 from sqlalchemy.exc import SQLAlchemyError, NoResultFound
 from app.core.exceptions import DatabaseError, NotFoundError
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 def handle_db_errors(func):
     @wraps(func)
@@ -13,7 +14,8 @@ def handle_db_errors(func):
         except NoResultFound:
             raise NotFoundError()
         except SQLAlchemyError as e:
-            if hasattr(args[0], 'session'):
+            if hasattr(args[0], "session"):
                 await args[0].session.rollback()
             raise DatabaseError(str(e))
+
     return wrapper

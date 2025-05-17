@@ -6,11 +6,12 @@ from fastapi import HTTPException
 from app.integrations.digiseller import DigisellerAPI, DigisellerAPIError
 from app.repositories.orders import OrderRepository
 from app.schemas.orders import OrderCreate, OrderRead
+from app.db.models.orders import Orders
 from app.utils.convert_time import moscow_to_timestamp
 
 
-def map_digi_response_to_order(unique_code: str, digi_data: dict) -> OrderCreate:
-    return OrderCreate(
+def map_digi_response_to_order(unique_code: str, digi_data: dict) -> Orders:
+    data = OrderCreate(
         inv=digi_data.get("inv"),
         unique_code=unique_code,
         lot_id=digi_data.get("id_goods"),
@@ -21,6 +22,8 @@ def map_digi_response_to_order(unique_code: str, digi_data: dict) -> OrderCreate
         check_time=int(time.time()),
         status=OrderRead.status.pending,
     )
+
+    return Orders(**data.model_dump())
 
 
 class OrderService:

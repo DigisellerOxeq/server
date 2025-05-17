@@ -1,14 +1,14 @@
 import uvicorn
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
 
 from app.db.session import db_helper
 from app.core.config import settings
 from app.api import router as api_router
 from app.lib.http_client import HTTPClient
-
+from app.core.exceptions import DatabaseError
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,6 +34,11 @@ app = FastAPI(
 app.include_router(
     api_router,
 )
+
+@app.exception_handler(DatabaseError)
+async def handle_database_error(request: Request, exc: DatabaseError):
+    return ORJSONResponse(status_code=500, content={"detail": str(exc)})
+
 
 if __name__ == "__main__":
 

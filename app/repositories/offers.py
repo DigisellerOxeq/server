@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update, SQLAlchemyError
+from sqlalchemy import select, update
 
 from app.core.decorators import handle_db_errors
 from app.db.models import Offers

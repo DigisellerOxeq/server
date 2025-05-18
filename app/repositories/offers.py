@@ -33,7 +33,7 @@ class OfferRepository:
     async def update(self, offer_id: int, update_data: dict) -> Offers:
         stmt = (
             update(Offers)
-            .where(Offers.id == offer_id)
+            .where(Offers.lot_id == offer_id)
             .values(**update_data)
             .returning(Offers)
         )

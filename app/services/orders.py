@@ -5,7 +5,7 @@ from fastapi import HTTPException
 
 from app.integrations.digiseller import DigisellerAPI, DigisellerAPIError
 from app.repositories.orders import OrderRepository
-from app.schemas.orders import OrderCreate, OrderRead
+from app.schemas.orders import OrderCreate, OrderRead, Status
 from app.db.models.orders import Orders
 from app.utils.convert_time import moscow_to_timestamp
 
@@ -21,7 +21,7 @@ def map_response(unique_code: str, digi_data: dict) -> Orders:
             received_currency=digi_data.get("type_curr"),
             pay_time=moscow_to_timestamp(digi_data.get("date_pay")),
             check_time=int(time.time()),
-            status=OrderCreate.status.pending,
+            status=Status.pending,
         ).model_dump()
     )
 

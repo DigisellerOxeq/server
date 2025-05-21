@@ -1,0 +1,31 @@
+from app.lib.http_client import HTTPClient
+from app.core.config import settings
+
+class APIClients:
+    def __init__(self):
+        self.digi = None
+        self.wgamers = None
+
+    async def init_digi_client(self):
+        self.digi = HTTPClient(
+            base_url=settings.digi.base_url,
+            headers=settings.digi.headers,
+            timeout=settings.digi.timeout,
+            delay=settings.digi.delay,
+            retries=settings.digi.retries,
+        )
+
+    async def init_wgamers_client(self):
+        self.wgamers = HTTPClient(
+            base_url=settings.digi.base_url,
+            headers=settings.digi.headers,
+            timeout=settings.digi.timeout,
+            delay=settings.digi.delay,
+            retries=settings.digi.retries,
+        )
+
+    async def close_all(self):
+        if self.digi:
+            await self.digi.aclose()
+        if self.wgamers:
+            await self.wgamers.aclose()

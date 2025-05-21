@@ -4,6 +4,7 @@ from typing import Sequence
 from fastapi import HTTPException, BackgroundTasks
 
 from app.integrations.digiseller import DigisellerAPI, DigisellerAPIError
+from app.integrations.welcomegamers import WelcomeGamersAPI, WelcomeGamersAPIError
 from app.repositories.orders import OrderRepository
 from app.schemas.orders import OrderCreate, OrderRead, Status
 from app.db.models.orders import Orders
@@ -40,9 +41,10 @@ class OrderService:
         return await order
 
     async def create_order(
-        self, unique_code: str, digi_api: DigisellerAPI, background_task: BackgroundTasks
+        self, unique_code: str, digi_api: DigisellerAPI, wgamers_api:  WelcomeGamersAPI, background_task: BackgroundTasks
     ) -> OrderCreate:
         if existing_order := await self.order_repo.get_by_unique_code(unique_code):
+            background_task.add_task(self.get_goods, unique_code, wgamers_api)
             return existing_order
 
         try:
@@ -52,19 +54,27 @@ class OrderService:
             )
 
             order = map_response(unique_code, order_data)
-            background_task.add_task(self.get_goods, unique_code)
-
-            return await self.order_repo.create(order)
+            result = await self.order_repo.create(order)
 
         except DigisellerAPIError as e:
             raise HTTPException(
                 status_code=502, detail=f"Digiseller service unavailable: {str(e)}"
             )
 
+        background_task.add_task(self.get_goods, unique_code, wgamers_api)
+        return result
 
-    async def get_goods(self, unique_code):
+
+    async def get_goods(self, unique_code: str, wgamers_api: WelcomeGamersAPI):
         existing_order = await self.order_repo.get_by_unique_code(unique_code)
         if not existing_order:
             return
 
-        
+        try:
+            response = await wgamers_api.test_request()
+
+        except WelcomeGamersAPIError as e:
+            raise HTTPException(
+                status_code=502, detail=f"WelcomeGamers service unavailable: {str(e)}"
+            )
+

@@ -12,4 +12,12 @@ class WelcomeGamersAPI:
         self.http_client = http_client
         self.api_key = api_key
 
+    async def test_request(self) -> None:
 
+        test_list = [
+            'code1', 'code2', 'code3'
+        ]
+        try:
+            return test_list
+        except Exception as e:
+            raise WelcomeGamersAPIError(f"Auth failed: {str(e)}")

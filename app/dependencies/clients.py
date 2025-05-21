@@ -15,6 +15,6 @@ async def get_digiseller_api(request: Request) -> DigisellerAPI:
 
 async def get_wgamers_api(request: Request) -> WelcomeGamersAPI:
     return WelcomeGamersAPI(
-        http_client=request.app.state.clients.digi,
+        http_client=request.app.state.clients.wgamers,
         api_key=settings.wgamers.api_key,
     )

@@ -26,6 +26,15 @@ class DigisellerConfig(BaseModel):
     delay: int = 1
 
 
+class WelcomeGamersConfig(BaseModel):
+    base_url: str = "https://hub.welcomegamers.ru/api/funpay"
+    headers: dict = {"Content-Type": "application/json", "Accept": "application/json"}
+    api_key: str = ...
+    timeout: int = 15
+    retries: int = 3
+    delay: int = 1
+
+
 class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
@@ -39,6 +48,7 @@ class Settings(BaseSettings):
     db: DataBaseConfig = ...
     auth: AuthConfig = ...
     digi: DigisellerConfig = ...
+    wgamers: WelcomeGamersConfig = ...
 
 
 settings = Settings()

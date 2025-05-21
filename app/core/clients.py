@@ -17,11 +17,11 @@ class APIClients:
 
     async def init_wgamers_client(self):
         self.wgamers = HTTPClient(
-            base_url=settings.digi.base_url,
-            headers=settings.digi.headers,
-            timeout=settings.digi.timeout,
-            delay=settings.digi.delay,
-            retries=settings.digi.retries,
+            base_url=settings.wgamers.base_url,
+            headers=settings.wgamers.headers,
+            timeout=settings.wgamers.timeout,
+            delay=settings.wgamers.delay,
+            retries=settings.wgamers.retries,
         )
 
     async def close_all(self):

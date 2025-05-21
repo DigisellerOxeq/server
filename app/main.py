@@ -7,22 +7,20 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.session import db_helper
 from app.core.config import settings
+from app.core.clients import APIClients
 from app.api import router as api_router
-from app.lib.http_client import HTTPClient
 from app.core.exceptions import DatabaseError, NotFoundError
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.http_client = HTTPClient(
-        base_url=settings.digi.base_url,
-        headers=settings.digi.headers,
-        timeout=settings.digi.timeout,
-        delay=settings.digi.delay,
-        retries=settings.digi.retries,
-    )
+    clients = APIClients()
+    await clients.init_digi_client()
+    await clients.init_wgamers_client()
+    app.state.clients = clients
     yield
     await db_helper.dispose()
+    await clients.close_all()
     await app.state.http_client.close()
 
 

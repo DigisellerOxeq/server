@@ -30,3 +30,5 @@ class Orders(Base):
     notation: Mapped[str] = mapped_column(nullable=True)
 
     offer: Mapped["Offers"] = relationship(back_populates="orders")
+    goods_list: Mapped[list["Goods"]] = relationship(back_populates="order")
+

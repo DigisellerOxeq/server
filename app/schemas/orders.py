@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 from enum import Enum
 
 from app.schemas.offers import OfferRead
+from app.schemas.goods import Goods
 
 
 # Статусы заказов
@@ -28,6 +29,7 @@ class OrderRead(BaseModel):
     notation: Optional[str] = None
 
     offer: Optional[OfferRead] = None
+    goods_list: List[Goods] = []
 
 
 # Создание заказа

@@ -15,7 +15,11 @@ class OrderRepository:
     @handle_db_errors
     async def get_all(self) -> Sequence[Orders]:
         result = await self.session.scalars(
-            select(Orders).options(joinedload(Orders.offer))
+            select(Orders)
+            .options(
+                joinedload(Orders.offer),
+                joinedload(Orders.goods_list)
+            )
         )
         return result.all()
 
@@ -23,7 +27,10 @@ class OrderRepository:
     async def get_by_unique_code(self, unique_code: str) -> Orders:
         result = await self.session.execute(
             select(Orders)
-            .options(joinedload(Orders.offer))
+            .options(
+                joinedload(Orders.offer),
+                joinedload(Orders.goods_list)
+            )
             .where(Orders.unique_code == unique_code)
         )
         return result.scalar()
@@ -32,6 +39,6 @@ class OrderRepository:
     async def create(self, order: Orders) -> Orders:
         self.session.add(order)
         await self.session.commit()
-        await self.session.refresh(order, ["offer"])
+        await self.session.refresh(order, ["offer", "goods_list"])
         return order
 

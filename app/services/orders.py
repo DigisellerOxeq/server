@@ -1,7 +1,7 @@
 import time
 from typing import Sequence
 
-from fastapi import HTTPException
+from fastapi import HTTPException, BackgroundTasks
 
 from app.integrations.digiseller import DigisellerAPI, DigisellerAPIError
 from app.repositories.orders import OrderRepository
@@ -40,7 +40,7 @@ class OrderService:
         return await order
 
     async def create_order(
-        self, unique_code: str, digi_api: DigisellerAPI
+        self, unique_code: str, digi_api: DigisellerAPI, background_task: BackgroundTasks
     ) -> OrderCreate:
         if existing_order := await self.order_repo.get_by_unique_code(unique_code):
             return existing_order
@@ -52,9 +52,19 @@ class OrderService:
             )
 
             order = map_response(unique_code, order_data)
+            background_task.add_task(self.get_goods, unique_code)
+
             return await self.order_repo.create(order)
 
         except DigisellerAPIError as e:
             raise HTTPException(
                 status_code=502, detail=f"Digiseller service unavailable: {str(e)}"
             )
+
+
+    async def get_goods(self, unique_code):
+        existing_order = await self.order_repo.get_by_unique_code(unique_code)
+        if not existing_order:
+            return
+
+        

@@ -19,9 +19,7 @@ async def get_all_orders(service: OrderService = Depends(get_order_service)):
 
 
 # Получение заказа по unique code
-@router.get(
-    "/{unique_code}", response_model=OrderRead
-)
+@router.get("/{unique_code}", response_model=OrderRead)
 async def get_by_unique_code(
     unique_code: str, service: OrderService = Depends(get_order_service)
 ):
@@ -35,11 +33,11 @@ async def create_order(
     unique_code: str,
     service: OrderService = Depends(get_order_service),
     digi_api: DigisellerAPI = Depends(get_digiseller_api),
-    wgamers_api: WelcomeGamersAPI = Depends(get_wgamers_api)
+    wgamers_api: WelcomeGamersAPI = Depends(get_wgamers_api),
 ):
     return await service.create_order(
         unique_code=unique_code,
         digi_api=digi_api,
         wgamers_api=wgamers_api,
-        background_task=background_task
+        background_task=background_task,
     )

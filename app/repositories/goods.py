@@ -9,15 +9,13 @@ class GoodsRepository:
         self.session = session
 
     @handle_db_errors
-    async def add_goods(self, order_code: str, get_time: int, values: list[str]) -> None:
+    async def add_goods(
+        self, order_code: str, get_time: int, values: list[str]
+    ) -> None:
         goods_objects = []
         for value in values:
             goods_objects.append(
-                Goods(
-                    order_code=order_code,
-                    get_time=get_time,
-                    value=value
-                )
+                Goods(order_code=order_code, get_time=get_time, value=value)
             )
 
         self.session.add_all(goods_objects)

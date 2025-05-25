@@ -31,4 +31,3 @@ class Orders(Base):
 
     offer: Mapped["Offers"] = relationship(back_populates="orders")
     goods_list: Mapped[list["Goods"]] = relationship(back_populates="order")
-

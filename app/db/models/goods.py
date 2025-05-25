@@ -9,7 +9,9 @@ class Goods(Base):
     __tablename__ = "goods"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    order_code: Mapped[str] = mapped_column(ForeignKey("orders.unique_code"), nullable=False)
+    order_code: Mapped[str] = mapped_column(
+        ForeignKey("orders.unique_code"), nullable=False
+    )
     value: Mapped[str] = mapped_column(nullable=False)
     get_time: Mapped[int] = mapped_column(nullable=False)
 

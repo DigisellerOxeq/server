@@ -17,10 +17,8 @@ class OrderRepository:
     @handle_db_errors
     async def get_all(self) -> Sequence[Orders]:
         result = await self.session.scalars(
-            select(Orders)
-            .options(
-                joinedload(Orders.offer),
-                joinedload(Orders.goods_list)
+            select(Orders).options(
+                joinedload(Orders.offer), joinedload(Orders.goods_list)
             )
         )
         return result.all()
@@ -29,10 +27,7 @@ class OrderRepository:
     async def get_by_unique_code(self, unique_code: str) -> Orders:
         result = await self.session.execute(
             select(Orders)
-            .options(
-                joinedload(Orders.offer),
-                joinedload(Orders.goods_list)
-            )
+            .options(joinedload(Orders.offer), joinedload(Orders.goods_list))
             .where(Orders.unique_code == unique_code)
         )
         return result.scalar()
@@ -44,29 +39,30 @@ class OrderRepository:
         await self.session.refresh(order, ["offer", "goods_list"])
         return order
 
-
     @handle_db_errors
-    async def change_status(self, unique_code: str, current_status: str, need_status: Status, notation: str = None) -> Orders:
-            result = await self.session.execute(
-                select(Orders)
-                .where(
-                    (Orders.unique_code == unique_code) &
-                    (Orders.status == current_status)
-                )
-                .options(
-                    joinedload(Orders.offer),
-                    joinedload(Orders.goods_list)
-                )
-                .where(Orders.unique_code == unique_code)
+    async def change_status(
+        self,
+        unique_code: str,
+        current_status: str,
+        need_status: Status,
+        notation: str = None,
+    ) -> Orders:
+        result = await self.session.execute(
+            select(Orders)
+            .where(
+                (Orders.unique_code == unique_code) & (Orders.status == current_status)
             )
+            .options(joinedload(Orders.offer), joinedload(Orders.goods_list))
+            .where(Orders.unique_code == unique_code)
+        )
 
-            order = result.scalar()
-            if not order:
-                raise NotFoundError()
+        order = result.scalar()
+        if not order:
+            raise NotFoundError()
 
-            order.status = need_status
-            if notation:
-                order.notation = notation
+        order.status = need_status
+        if notation:
+            order.notation = notation
 
-            await self.session.commit()
-            return order
+        await self.session.commit()
+        return order

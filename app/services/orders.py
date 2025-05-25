@@ -44,7 +44,11 @@ class OrderService:
         return order
 
     async def create_order(
-        self, unique_code: str, digi_api: DigisellerAPI, wgamers_api:  WelcomeGamersAPI, background_task: BackgroundTasks
+        self,
+        unique_code: str,
+        digi_api: DigisellerAPI,
+        wgamers_api: WelcomeGamersAPI,
+        background_task: BackgroundTasks,
     ) -> OrderCreate:
         if existing_order := await self.order_repo.get_by_unique_code(unique_code):
             return existing_order
@@ -66,7 +70,6 @@ class OrderService:
         background_task.add_task(self.get_goods, unique_code, wgamers_api)
         return result
 
-
     async def get_goods(self, unique_code: str, wgamers_api: WelcomeGamersAPI):
         existing_order = await self.order_repo.get_by_unique_code(unique_code)
         if not existing_order:
@@ -81,26 +84,22 @@ class OrderService:
         except NoResultFound:
             return None
 
-
         try:
             response = await wgamers_api.test_request()
-            get_time = response['get_time']
-            values = response['values']
+            get_time = response["get_time"]
+            values = response["values"]
 
         except WelcomeGamersAPIError as e:
             await self.order_repo.change_status(
                 unique_code=unique_code,
                 current_status=Status.pending,
                 need_status=Status.error,
-                notation='Ошибка получения товара'
+                notation="Ошибка получения товара",
             )
             return None
 
-
         await self.goods_repo.add_goods(
-            order_code=unique_code,
-            get_time=get_time,
-            values=values
+            order_code=unique_code, get_time=get_time, values=values
         )
 
         await self.order_repo.change_status(
@@ -108,4 +107,3 @@ class OrderService:
             current_status=Status.processing,
             need_status=Status.success,
         )
-

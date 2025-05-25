@@ -26,6 +26,6 @@ class APIClients:
 
     async def close_all(self):
         if self.digi:
-            await self.digi.aclose()
+            await self.digi.close()
         if self.wgamers:
             await self.wgamers.aclose()

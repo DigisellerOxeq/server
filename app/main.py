@@ -20,8 +20,7 @@ async def lifespan(app: FastAPI):
     app.state.clients = clients
     yield
     await db_helper.dispose()
-    await clients.close_all()
-    await app.state.http_client.close()
+    await app.state.clients.close_all()
 
 
 app = FastAPI(

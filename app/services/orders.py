@@ -23,6 +23,7 @@ def map_response(unique_code: str, digi_data: dict) -> Orders:
             buyer_email=digi_data.get("email"),
             received=digi_data.get("amount"),
             received_currency=digi_data.get("type_curr"),
+            options=digi_data.get("options"),
             pay_time=moscow_to_timestamp(digi_data.get("date_pay")),
             check_time=int(time.time()),
             status=Status.pending,

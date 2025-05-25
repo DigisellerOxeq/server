@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict
 from pydantic import BaseModel
 from enum import Enum
 
@@ -23,6 +23,7 @@ class OrderRead(BaseModel):
     buyer_email: str
     received: float
     received_currency: str
+    options: Optional[List[Dict]]
     pay_time: int
     check_time: int
     status: Status
@@ -40,6 +41,7 @@ class OrderCreate(BaseModel):
     buyer_email: str
     received: float
     received_currency: str
+    options: Optional[List[Dict]]
     pay_time: int
     check_time: int
     status: Status

@@ -1,7 +1,7 @@
 import enum
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Enum, ForeignKey
+from sqlalchemy import Enum, ForeignKey, JSON
 
 from app.db.base import Base
 
@@ -24,6 +24,7 @@ class Orders(Base):
     buyer_email: Mapped[str] = mapped_column(nullable=False)
     received: Mapped[float] = mapped_column(nullable=False)
     received_currency: Mapped[str] = mapped_column(nullable=False)
+    options: Mapped[list[dict]] = mapped_column(JSON, nullable=True)
     pay_time: Mapped[int] = mapped_column(nullable=False)
     check_time: Mapped[int] = mapped_column(nullable=True)
     status: Mapped[Status] = mapped_column(Enum(Status), nullable=False)

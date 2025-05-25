@@ -9,6 +9,7 @@ from alembic import context
 from app.db.models.orders import Orders
 from app.db.models.offers import Offers
 from app.db.models.goods import Goods
+from app.db.models.options import Options
 from app.db.base import Base
 from app.core.config import settings
 

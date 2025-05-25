@@ -25,3 +25,4 @@ class Offers(Base):
     add_time: Mapped[int] = mapped_column(nullable=False)
 
     orders: Mapped[list["Orders"]] = relationship(back_populates="offer")
+    options: Mapped[list["Options"]] = relationship(back_populates="offer")

@@ -28,4 +28,4 @@ class APIClients:
         if self.digi:
             await self.digi.close()
         if self.wgamers:
-            await self.wgamers.aclose()
+            await self.wgamers.close()

@@ -24,6 +24,7 @@ class DigisellerConfig(BaseModel):
     timeout: int = 15
     retries: int = 3
     delay: int = 1
+    min_pay_time: int = 1748160000
 
 
 class WelcomeGamersConfig(BaseModel):

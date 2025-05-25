@@ -4,6 +4,7 @@ from typing import Sequence
 from fastapi import HTTPException, BackgroundTasks
 from sqlalchemy.exc import NoResultFound
 
+from app.core.config import settings
 from app.integrations.digiseller import DigisellerAPI, DigisellerAPIError
 from app.integrations.welcomegamers import WelcomeGamersAPI, WelcomeGamersAPIError
 from app.repositories.orders import OrderRepository
@@ -60,6 +61,13 @@ class OrderService:
             )
 
             order = map_response(unique_code, order_data)
+
+            if order.pay_time < settings.digi.min_pay_time:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Покупки старше {settings.digi.min_pay_time} не обрабатываются"
+                )
+
             result = await self.order_repo.create(order)
 
         except DigisellerAPIError as e:

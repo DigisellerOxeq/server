@@ -20,12 +20,12 @@ class OptionsService:
         return offer
 
     async def add_option(self, data: OptionsCreate) -> Options:
-        options = await self.repo.get_by_option_id(data.option_id)
+        options = await self.repo.get_by_id(data.option_id)
         if options:
             raise HTTPException(status_code=409, detail="Options already exist")
 
         db_options_data = data.model_dump()
         return await self.repo.create(Options(**db_options_data))
 
-    async def delete_option(self, option_id: int) -> bool:
-        return await self.repo.delete(option_id)
+    async def delete_option(self, id: int) -> bool:
+        return await self.repo.delete(id)

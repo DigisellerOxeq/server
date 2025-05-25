@@ -25,9 +25,9 @@ class OptionsRepository:
         return result.all()
 
     @handle_db_errors
-    async def get_by_option_id(self, option_id: int) -> Options:
+    async def get_by_id(self, id: int) -> Options:
         result = await self.session.scalar(
-            select(Options).where(Options.option_id == option_id)
+            select(Options).where(Options.id == id)
         )
         return result
 
@@ -38,9 +38,9 @@ class OptionsRepository:
         return data
 
     @handle_db_errors
-    async def delete(self, option_id: int) -> bool:
+    async def delete(self, id: int) -> bool:
         result = await self.session.scalar(
-            select(Options).where(Options.option_id == option_id)
+            select(Options).where(Options.id == id)
         )
 
         if not result:

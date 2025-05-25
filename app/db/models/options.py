@@ -12,7 +12,7 @@ class Options(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     offer_id: Mapped[int] = mapped_column(ForeignKey("offers.id"), nullable=False)
-    option_id: Mapped[int] = mapped_column(nullable=False, unique=True)
+    option_id: Mapped[int] = mapped_column(nullable=False)
     option_type: Mapped[str] = mapped_column(nullable=False)
     value: Mapped[str] = mapped_column(nullable=False)
 

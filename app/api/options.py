@@ -1,32 +1,32 @@
 from fastapi import APIRouter
 from fastapi.params import Depends
 
-from app.schemas.options import Options
+from app.schemas.options import OptionsCreate, OptionsRead
 from app.services.options import OptionsService
-from app.dependencies.offers import get_offer_service
+from app.dependencies.options import get_options_service
 from app.dependencies.auth import get_auth
 
 router = APIRouter(prefix="/options", tags=["Options"])
 
 
 # Получение всех опций
-@router.get("/", response_model=list[Options], dependencies=[Depends(get_auth)])
-async def get_options(service: OptionsService = Depends(get_offer_service)):
-    return await service.get_all_offers()
+@router.get("/", response_model=list[OptionsRead], dependencies=[Depends(get_auth)])
+async def get_options(service: OptionsService = Depends(get_options_service)):
+    return await service.get_all_options()
 
 
 # Получение всех опций по offer_id
-@router.get("/{offer_id}", response_model=list[Options], dependencies=[Depends(get_auth)])
+@router.get("/{offer_id}", response_model=list[OptionsRead], dependencies=[Depends(get_auth)])
 async def get_option_by_id(
-    offer_id: int, service: OptionsService = Depends(get_offer_service)
+    offer_id: int, service: OptionsService = Depends(get_options_service)
 ):
     return await service.get_by_offer_id(offer_id)
 
 
 # Добавление опции
-@router.post("/", response_model=Options, dependencies=[Depends(get_auth)])
+@router.post("/", response_model=OptionsRead, dependencies=[Depends(get_auth)])
 async def create_option(
-    data: Options, service: OptionsService = Depends(get_offer_service)
+    data: OptionsCreate, service: OptionsService = Depends(get_options_service)
 ):
     return await service.add_option(data)
 
@@ -34,6 +34,6 @@ async def create_option(
 # Удаление опции
 @router.delete("/{offer_id}", dependencies=[Depends(get_auth)])
 async def delete_option(
-    option_id: int, service: OptionsService = Depends(get_offer_service)
+    option_id: int, service: OptionsService = Depends(get_options_service)
 ):
     return await service.delete_option(option_id)

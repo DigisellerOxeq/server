@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional, List
 
-from options import Options
+from app.schemas.options import OptionsRead
 
 
 class LotType(str, Enum):
@@ -16,7 +16,7 @@ class OfferRead(BaseModel):
     lot_type: LotType
     add_time: int
     is_active: bool
-    options: List[Options]
+    options: List[OptionsRead]
 
 
 class OfferCreate(BaseModel):

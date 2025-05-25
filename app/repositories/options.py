@@ -18,11 +18,11 @@ class OptionsRepository:
         return result.all()
 
     @handle_db_errors
-    async def get_by_offer_id(self, offer_id: int) -> Options:
-        result = await self.session.scalar(
+    async def get_by_offer_id(self, offer_id: int) -> Sequence[Options]:
+        result = await self.session.scalars(
             select(Options).where(Options.offer_id == offer_id)
         )
-        return result
+        return result.all()
 
     @handle_db_errors
     async def get_by_option_id(self, option_id: int) -> Options:

@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 
@@ -13,13 +14,17 @@ class OfferRepository:
 
     @handle_db_errors
     async def get_all(self) -> Sequence[Offers]:
-        result = await self.session.scalars(select(Offers))
-        return result.all()
+        result = await self.session.scalars(select(Offers)
+        .options(joinedload(Offers.options))
+        )
+        return result.unique().all()
 
     @handle_db_errors
     async def get_by_id(self, offer_id: int) -> Offers:
         result = await self.session.scalar(
-            select(Offers).where(Offers.lot_id == offer_id)
+            select(Offers)
+            .where(Offers.lot_id == offer_id)
+            .options(joinedload(Offers.options))
         )
         return result
 
@@ -36,6 +41,7 @@ class OfferRepository:
             .where(Offers.lot_id == offer_id)
             .values(**update_data)
             .returning(Offers)
+            .options(joinedload(Offers.options))
         )
 
         result = await self.session.execute(stmt)

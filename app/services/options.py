@@ -1,10 +1,9 @@
 from typing import Sequence
-import time
 
 from fastapi import HTTPException
-from app.db.models.offers import Offers
+from app.schemas.options import OptionsCreate
+from app.db.models.options import Options
 from app.repositories.options import OptionsRepository
-from app.schemas.options import Options
 
 
 class OptionsService:
@@ -17,16 +16,16 @@ class OptionsService:
     async def get_by_offer_id(self, offer_id: int) -> Sequence[Options]:
         offer = await self.repo.get_by_offer_id(offer_id)
         if not offer:
-            raise HTTPException(status_code=404, detail="Offer not found")
+            raise HTTPException(status_code=404, detail="Options not found")
         return offer
 
-    async def add_option(self, data: Options) -> Options:
-        offer = await self.repo.get_by_option_id(data.lot_id)
-        if offer:
-            raise HTTPException(status_code=409, detail="Offer already exist")
+    async def add_option(self, data: OptionsCreate) -> Options:
+        options = await self.repo.get_by_option_id(data.option_id)
+        if options:
+            raise HTTPException(status_code=409, detail="Options already exist")
 
-        db_offer_data = data.model_dump()
-        return await self.repo.create(Offers(**db_offer_data))
+        db_options_data = data.model_dump()
+        return await self.repo.create(Options(**db_options_data))
 
     async def delete_option(self, option_id: int) -> bool:
         return await self.repo.delete(option_id)

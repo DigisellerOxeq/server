@@ -32,7 +32,7 @@ async def create_option(
 
 
 # Удаление опции
-@router.delete("/{offer_id}", dependencies=[Depends(get_auth)])
+@router.delete("/{option_id}", dependencies=[Depends(get_auth)])
 async def delete_option(
     option_id: int, service: OptionsService = Depends(get_options_service)
 ):

@@ -1,5 +1,5 @@
 from app.lib.http_client import HTTPClient
-from typing import Any
+from typing import Any, Optional
 
 
 class WelcomeGamersAPIError(Exception):
@@ -13,9 +13,14 @@ class WelcomeGamersAPI:
         self.http_client = http_client
         self.api_key = api_key
 
-    async def test_request(self) -> dict[str:Any]:
+    async def test_request(
+            self,
+            currency: Optional[str] = None,
+            nominal: Optional[str] = None,
+            platform: Optional[str] = None
+    ) -> dict[str:Any]:
 
-        test_list = ["code1", "code2", "code3"]
+        test_list = ["code1", "code2", "code3", currency, nominal, platform]
         try:
             return {"get_time": 1, "values": test_list}
         except Exception as e:

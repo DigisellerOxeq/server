@@ -9,9 +9,9 @@ from app.db.base import Base
 
 
 class LotType(enum.Enum):
-    telegram_stars = "telegram_stars"
-    steam_cards = "steam_cards"
-    itunes_cards = "itunes_cards"
+    telegram_stars = "telegram"
+    steam_cards = "steam"
+    itunes_cards = "itunes"
 
 
 class Offers(Base):

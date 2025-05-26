@@ -6,9 +6,9 @@ from app.schemas.options import OptionsRead
 
 
 class LotType(str, Enum):
-    telegram_stars = "telegram_stars"
-    steam_cards = "steam_cards"
-    itunes_cards = "itunes_cards"
+    telegram = "telegram"
+    steam = "steam"
+    itunes = "itunes"
 
 
 class OfferRead(BaseModel):

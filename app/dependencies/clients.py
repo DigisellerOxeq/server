@@ -7,6 +7,7 @@ from app.core.config import settings
 
 async def get_digiseller_api(request: Request) -> DigisellerAPI:
     return DigisellerAPI(
+        base_url=settings.digi.base_url,
         http_client=request.app.state.clients.digi,
         api_key=settings.digi.api_key,
         seller_id=settings.digi.seller_id,
@@ -15,6 +16,7 @@ async def get_digiseller_api(request: Request) -> DigisellerAPI:
 
 async def get_wgamers_api(request: Request) -> WelcomeGamersAPI:
     return WelcomeGamersAPI(
+        base_url=settings.wgamers.base_url,
         http_client=request.app.state.clients.wgamers,
         api_key=settings.wgamers.api_key,
     )

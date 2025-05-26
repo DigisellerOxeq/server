@@ -13,8 +13,8 @@ class DigisellerAPIError(Exception):
 
 
 class DigisellerAPI:
-    def __init__(self, http_client: HTTPClient, api_key: str, seller_id: int):
-        self.base_url = settings.digi.base_url
+    def __init__(self, http_client: HTTPClient, base_url: str, api_key: str, seller_id: int):
+        self.base_url = base_url
         self.http_client = http_client
         self.api_key = api_key
         self.seller_id = seller_id
@@ -50,7 +50,7 @@ class DigisellerAPI:
             response = await self.http_client.get(
                 endpoint=self.base_url + f"/api/purchases/unique-code/{unique_code}/?token={token}",
             )
-
+            print(response)
             if response.get("retval") != 0:
                 raise DigisellerAPIError("Invalid response format")
 

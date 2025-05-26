@@ -12,6 +12,7 @@ class LotType(str, Enum):
 
 
 class OfferRead(BaseModel):
+    id: int
     lot_id: int
     lot_type: LotType
     add_time: int

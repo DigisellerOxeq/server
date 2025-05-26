@@ -2,6 +2,7 @@ import time
 import hashlib
 from typing import Any
 
+from app.core.config import settings
 from app.lib.http_client import HTTPClient
 
 
@@ -13,6 +14,7 @@ class DigisellerAPIError(Exception):
 
 class DigisellerAPI:
     def __init__(self, http_client: HTTPClient, api_key: str, seller_id: int):
+        self.base_url = settings.digi.base_url
         self.http_client = http_client
         self.api_key = api_key
         self.seller_id = seller_id
@@ -23,7 +25,7 @@ class DigisellerAPI:
 
         try:
             response = await self.http_client.post(
-                endpoint="/api/apilogin",
+                endpoint=self.base_url + "/api/apilogin",
                 json={
                     "seller_id": self.seller_id,
                     "timestamp": timestamp,
@@ -46,7 +48,7 @@ class DigisellerAPI:
     async def search_order(self, unique_code, token) -> dict[Any]:
         try:
             response = await self.http_client.get(
-                endpoint=f"/api/purchases/unique-code/{unique_code}/?token={token}",
+                endpoint=self.base_url + f"/api/purchases/unique-code/{unique_code}/?token={token}",
             )
 
             if response.get("retval") != 0:

@@ -9,7 +9,6 @@ class APIClients:
 
     async def init_digi_client(self):
         self.digi = HTTPClient(
-            base_url=settings.digi.base_url,
             headers=settings.digi.headers,
             timeout=settings.digi.timeout,
             delay=settings.digi.delay,
@@ -18,7 +17,6 @@ class APIClients:
 
     async def init_wgamers_client(self):
         self.wgamers = HTTPClient(
-            base_url=settings.wgamers.base_url,
             headers=settings.wgamers.headers,
             timeout=settings.wgamers.timeout,
             delay=settings.wgamers.delay,

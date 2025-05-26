@@ -4,9 +4,8 @@ import asyncio
 
 
 class HTTPClient:
-    def __init__(self, base_url: str, timeout: int = 10, headers: Optional[dict[str, str]] = None,
+    def __init__(self, timeout: int = 10, headers: Optional[dict[str, str]] = None,
                  retries: int = 3, delay: int = 1):
-        self.base_url = base_url
         self.timeout = timeout
         self.default_headers = headers or {}
         self.retries = retries
@@ -21,7 +20,7 @@ class HTTPClient:
         attempt = 0
         while attempt < self.retries:
             try:
-                response = await self.client.request(method, f"{self.base_url}{endpoint}", **kwargs)
+                response = await self.client.request(method, endpoint, **kwargs)
                 response.raise_for_status()
                 return response.json()
             except (httpx.HTTPStatusError, httpx.TimeoutException, httpx.RequestError) as e:
